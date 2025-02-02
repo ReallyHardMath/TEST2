@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instant Payment Webhook</title>
+    <title>Cloudy's VR Basement</title>
     <script src="https://www.paypal.com/sdk/js?client-id=ASoJQRZlQ8PkVbK4IxEB3O2ZBCHmnhjC01OQ1ql8C2YXmM-496Sn52jxF7U5Gb4_dF9EnjmKXA9-FotG&currency=USD"></script> 
     <style>
         body {
@@ -46,14 +46,14 @@
 </head>
 <body>
     <div class="container">
-        <h1>Pay & Get Verified</h1>
+        <h1>Donation Ranks</h1>
         <input type="text" id="discordUsername" placeholder="Enter your Discord Username" required>
         <h3>Select Payment Amount:</h3>
         <div class="button-container">
-            <button onclick="loadPayPal(5)">$5</button>
-            <button onclick="loadPayPal(10)">$10</button>
-            <button onclick="loadPayPal(15)">$15</button>
-            <button onclick="loadPayPal(20)">$20</button>
+            <button onclick="loadPayPal(5)">Supporter - $5</button>
+            <button onclick="loadPayPal(10)">Modder - $10</button>
+            <button onclick="loadPayPal(15)">Exclusive Modder - $15</button>
+            <button onclick="loadPayPal(20)">Custom Tier - $20</button>
         </div>
         <div id="paypal-button-container"></div>
     </div>
