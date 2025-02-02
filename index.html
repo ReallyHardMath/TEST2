@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instant Payment Webhook</title>
+    <script src="https://www.paypal.com/sdk/js?client-id=ASoJQRZlQ8PkVbK4IxEB3O2ZBCHmnhjC01OQ1ql8C2YXmM-496Sn52jxF7U5Gb4_dF9EnjmKXA9-FotG&currency=USD"></script> 
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1e1e2e;
+            color: white;
+            text-align: center;
+        }
+
+        .container {
+            margin-top: 50px;
+            padding: 20px;
+            background: #292945;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        input {
+            display: block;
+            width: 80%;
+            margin: 10px auto;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            background: #2d2d5a;
+            color: white;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        #paypal-button-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pay & Get Verified</h1>
+        <input type="text" id="discordUsername" placeholder="Enter your Discord Username" required>
+        <h3>Select Payment Amount:</h3>
+        <div class="button-container">
+            <button onclick="loadPayPal(5)">$5</button>
+            <button onclick="loadPayPal(10)">$10</button>
+            <button onclick="loadPayPal(15)">$15</button>
+            <button onclick="loadPayPal(20)">$20</button>
+        </div>
+        <div id="paypal-button-container"></div>
+    </div>
+
+    <script>
+        let selectedAmount = 0;
+        const PAYPAL_EMAIL = "mjserafin@icloud.com"; 
+        const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1335720681978986596/wNUMm4IbK4OuP7yR0zbSXSKc6TeUqOp4-EKQu84C0-F3XwIuFy2MmLQVtZ2pmR8O1wao";  
+
+        function loadPayPal(amount) {
+            let discordUsername = document.getElementById("discordUsername").value.trim();
+
+            if (!discordUsername) {
+                alert("Please enter your Discord username.");
+                return;
+            }
+
+            selectedAmount = amount;
+
+            document.getElementById("paypal-button-container").innerHTML = ""; 
+            paypal.Buttons({
+                createOrder: function(data, actions) {
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: { value: selectedAmount },
+                            payee: { email_address: PAYPAL_EMAIL } 
+                        }]
+                    });
+                },
+                onApprove: function(data, actions) {
+                    return actions.order.capture().then(function(details) {
+                        sendDiscordWebhook(discordUsername, selectedAmount);
+                        alert("Payment successful! An admin will verify.");
+                    });
+                }
+            }).render('#paypal-button-container');
+        }
+
+        function sendDiscordWebhook(discordUser, amount) {
+            const data = {
+                content: `✅ **Payment Made!**\n**Discord:** ${discordUser}\n**Amount:** $${amount}
+                <@536625633057439769> Please confirm this payment has come through.
+                `
+            };
+
+            fetch(DISCORD_WEBHOOK_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            }).then(response => {
+                if (response.ok) {
+                    console.log("Webhook sent successfully!");
+                } else {
+                    console.log("Failed to send webhook.");
+                }
+            });
+        }
+    </script>
+</body>
+</html>
